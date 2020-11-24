@@ -93,7 +93,21 @@ public class CFBinary extends CFExp{
         	 throw new Exception("error in eval : env is null");
          }
          
-         return null;
+         switch (operator){
+         
+         	case CFToken.UNION:
+         		return leftSub.eval(env).union(rightSub.eval(env));          
+            
+         	case CFToken.INTERSECTION:
+         		return leftSub.eval(env).intersect(rightSub.eval(env));
+            
+         	case CFToken.SETDIFF:
+         		return leftSub.eval(env).setDifference(rightSub.eval(env));
+         
+         	default:
+         		return leftSub.eval(env).symmetricDifference(rightSub.eval(env));
+            
+         }
       }
    
             

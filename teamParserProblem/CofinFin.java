@@ -146,6 +146,124 @@ public class CofinFin {
 	}
 
 	// mutators
+	
+	public CofinFin symmetricDifference(CofinFin other) throws Exception {
+
+		/***
+		 * 
+		 * Creates a new CF object and loads it with the symmetric difference of the set
+		 * represented by other and the set represented by this.
+		 * 
+		 * There is one error condition, other is null. If that is the case, the method
+		 * should throw an exception with the message
+		 * 
+		 * "Invalid call to symmetricDifference: other is null"
+		 * 
+		 * 
+		 * 
+		 * YOU MUST CODE THIS YOURSELF AS AN INDIVIDUAL
+		 * 
+		 * 
+		 ***/
+		if (other == null) {
+			throw new Exception("Invalid call to symmetricDifference: other is null");
+		}
+
+		CofinFin symDiff = new CofinFin();
+		boolean resultsComp = false;
+		TreeSet<Integer> temp1 = new TreeSet<Integer>();
+		TreeSet<Integer> temp2 = new TreeSet<Integer>();
+		Iterator<Integer> it;
+
+		if (!this.isComplemented && !other.isComplemented) {
+			temp1.addAll(this.theSet);
+			temp2.addAll(other.theSet);
+			temp1.removeAll(other.theSet); 			// if neither are complemented
+			temp2.removeAll(theSet); 				// (A\B)U(B\A)
+			symDiff.theSet.addAll(temp1);
+			symDiff.theSet.addAll(temp2);
+		} else if (this.isComplemented && other.isComplemented) {
+			temp1.addAll(this.theSet); 				// if both are complemented
+			temp2.addAll(this.theSet); 				// [CMP](A∩B)\[CMP](AUB)
+			temp1.retainAll(other.theSet);
+			temp2.addAll(other.theSet);
+			temp2.removeAll(temp1);
+			symDiff.theSet.addAll(temp2);
+		} else if (other.isComplemented) {			//it would have been so much extra coding...
+			resultsComp = true;
+			CofinFin tempThis = this.setDifference(other);			
+			tempThis.isComplemented = this.isComplemented;
+			CofinFin tempOther = other.setDifference(this);
+			tempOther.isComplemented = other.isComplemented;
+			symDiff.theSet.addAll(tempOther.theSet);
+			symDiff.theSet.removeAll(tempThis.theSet);
+		} else if (this.isComplemented) {
+			resultsComp = true;
+			CofinFin tempThis = this.setDifference(other);
+			tempThis.isComplemented = this.isComplemented;
+			CofinFin tempOther = other.setDifference(this);
+			tempOther.isComplemented = other.isComplemented;
+			symDiff.theSet.addAll(tempThis.theSet);
+			symDiff.theSet.removeAll(tempOther.theSet);
+		}
+
+		symDiff.isComplemented = resultsComp;
+		return symDiff;
+	}
+	
+	public CofinFin setDifference(CofinFin other) throws Exception {
+
+		/***
+		 * 
+		 * Creates a new CF object and loads it with the result of subtracting of the
+		 * members of the set represented by other from the set represented by this.
+		 * 
+		 * There is one error condition, other is null. If that is the case, the method
+		 * should throw an exception with the message
+		 * 
+		 * "Invalid call to setDifference: other is null"
+		 * 
+		 * 
+		 * 
+		 * YOU MUST CODE THIS YOURSELF AS AN INDIVIDUAL
+		 * 
+		 * 
+		 ***/
+		if (other == null) {
+			throw new Exception("Invalid call to setDifference: other is null");
+		}
+
+		CofinFin setDiff = new CofinFin();
+		boolean resultsComp = false;
+		TreeSet<Integer> tsCopy = new TreeSet<Integer>();
+		Iterator<Integer> it;
+		if (this.isComplemented && other.isComplemented) {
+			tsCopy.addAll(other.theSet);
+			tsCopy.removeAll(this.theSet);
+		} else if (this.isComplemented) {
+			tsCopy.addAll(this.theSet);
+			resultsComp = true;
+			tsCopy.addAll(other.theSet);
+		} else if (other.isComplemented) {
+			// When other is complement, and this is not
+			tsCopy.addAll(this.theSet);
+			it = tsCopy.iterator();
+			while (it.hasNext()) {
+				int element = it.next();
+				if (!other.theSet.contains(element)) {
+					it.remove();
+				}
+			}
+		} else {
+			// When neither are complement
+			tsCopy.addAll(this.theSet);
+			tsCopy.removeAll(other.theSet);
+		}
+
+		setDiff.theSet.addAll(tsCopy);
+		setDiff.isComplemented = resultsComp;
+		return setDiff;
+	}
 
 	public void remove(int n) {
 		/*
