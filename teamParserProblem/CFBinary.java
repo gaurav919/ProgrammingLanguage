@@ -89,7 +89,10 @@ public class CFBinary extends CFExp{
    **********************************************************************/
    
 	public CofinFin eval(Map<String, CofinFin> env) throws Exception{
-               
+         if (env == null) {
+        	 throw new Exception("error in eval : env is null");
+         }
+         
          return null;
       }
    
@@ -114,9 +117,11 @@ public class CFBinary extends CFExp{
    **********************************************************************/
  
 	public  CFExp substitute(Map<String, CFExp> bindings)throws Exception{
+      if (bindings == null) {
+       throw new Exception("error in substitute : bindings is null");
+      }
       
       return null;
-      
    }
    
    /*
@@ -127,7 +132,7 @@ public class CFBinary extends CFExp{
    
    *****************************************************************/
 	public  CFExp deepCopy(){
-     // should never throw an exception
+		// should never throw an exception
 
         return null;
      }
