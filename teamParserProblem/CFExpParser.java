@@ -345,7 +345,6 @@ public class CFExpParser {
 				lex.consume();
 				CFExp temp = A();
 				result = new CFBinary(tkT, result, temp);
-				return result;
 			}
 		}
 
@@ -365,21 +364,21 @@ public class CFExpParser {
 	private CFExp A() throws Exception {
 		CFToken tk = lex.lookahead();
 		int tkT = tk.getTokenType();
-
+		CFExp result = null;
+		
 		if (!CFToken.ESet.contains(tkT)) {
 			getErrorMessage("A", CFToken.ESet, lex);
 		} else {
-			CFExp result = B();
+			result = B();
 
 			while (tkT == 18) {
 				lex.consume();
 				CFExp temp = B();
 				result = new CFBinary(tkT, result, temp);
-				return result;
 			}
 		}
 
-		return null;
+		return result;
 	}
 
 	/*
@@ -395,11 +394,12 @@ public class CFExpParser {
 	private CFExp B() throws Exception {
 		CFToken tk = lex.lookahead();
 		int tkT = tk.getTokenType();
+		CFExp result = null;
 
 		if (!CFToken.ESet.contains(tkT)) {
 			getErrorMessage("B", CFToken.ESet, lex);
 		} else {
-			CFExp result = C();
+			result = C();
 
 			while (tkT == 17) {
 				lex.consume();
@@ -408,7 +408,7 @@ public class CFExpParser {
 			}
 		}
 
-		return null;
+		return result;
 	}
 
 	/*
@@ -425,11 +425,12 @@ public class CFExpParser {
 	private CFExp C() throws Exception {
 		CFToken tk = lex.lookahead();
 		int tkT = tk.getTokenType();
+		CFExp result = null;
 
 		if (!CFToken.ESet.contains(tkT)) {
 			getErrorMessage("C", CFToken.ESet, lex);
 		} else {
-			CFExp result = D();
+			result = D();
 
 			while (tkT == 16) {
 				lex.consume();
@@ -438,11 +439,29 @@ public class CFExpParser {
 			}
 		}
 
-		return null;
+		return result;
 	}
 
 	/*
-	 * 
+	 * <D> accomplishes both the complement operation and the
+    "atoms"; using Arden's lemma.  Note the let and if 
+    expressions in effect have their own punctuation parentheses,
+    let-endlet and if-endif. 
+    
+You can convert this to
+    
+	<D> = COMPLEMENT*(LET <BLIST> IN <E> ENDLET |
+             IF <TEST> THEN <E> ELSE <E> ENDIF |
+             ID | <CONST> | LEFTPAREN <E> RIGHTPAREN)
+
+	and then use a loop to count the number of COMPLEMENT(-) operations.
+
+	<D> ::= COMPLEMENT <D> | ID | <CONST> | LEFTPAREN <E> RIGHTPAREN
+        	LET <BLIST> IN <E> ENDLET |
+        	IF <TEST> THEN <E> ELSE <E> ENDIF 
+	Lookahead sets
+	COMPLEMENT | ID | CMP, LEFTBRACE | LEFTPAREN | LET | IF
+
 	 * YOU MUST CODE THIS
 	 * 
 	 * <D> ::= COMPLEMENT <D> | ID | <CONST> | LEFTPAREN <E> RIGHTPAREN | LET
@@ -489,9 +508,24 @@ public class CFExpParser {
 	 * 
 	 *************************************************************************/
 	private CFExp D() throws Exception {
+		CFToken tk = lex.lookahead();
+		int tkT = tk.getTokenType();
+		CFExp e = null;
+		Map<String, CFExp> M = null;
 
-		return null;
+		if (!CFToken.ESet.contains(tkT)) {
+			getErrorMessage("D", CFToken.ESet, lex);
+		} else {
+			e = D();
 
+			while (tkT == 16) {
+				lex.consume();
+				CFExp temp = D();
+				e = new CFBinary(tkT, e, temp);
+			}
+		}
+
+		return e.substitute(M);
 	}
 
 	/*
