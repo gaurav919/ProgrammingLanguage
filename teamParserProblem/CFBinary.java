@@ -89,8 +89,25 @@ public class CFBinary extends CFExp{
    **********************************************************************/
    
 	public CofinFin eval(Map<String, CofinFin> env) throws Exception{
-               
-         return null;
+         if (env == null) {
+        	 throw new Exception("error in eval : env is null");
+         }
+         
+         switch (operator){
+         
+         	case CFToken.UNION:
+         		return leftSub.eval(env).union(rightSub.eval(env));          
+            
+         	case CFToken.INTERSECTION:
+         		return leftSub.eval(env).intersect(rightSub.eval(env));
+            
+         	case CFToken.SETDIFF:
+         		return leftSub.eval(env).setDifference(rightSub.eval(env));
+         
+         	default:
+         		return leftSub.eval(env).symmetricDifference(rightSub.eval(env));
+            
+         }
       }
    
             
@@ -114,9 +131,11 @@ public class CFBinary extends CFExp{
    **********************************************************************/
  
 	public  CFExp substitute(Map<String, CFExp> bindings)throws Exception{
+      if (bindings == null) {
+       throw new Exception("error in substitute : bindings is null");
+      }
       
       return null;
-      
    }
    
    /*
@@ -127,7 +146,7 @@ public class CFBinary extends CFExp{
    
    *****************************************************************/
 	public  CFExp deepCopy(){
-     // should never throw an exception
+		// should never throw an exception
 
         return null;
      }

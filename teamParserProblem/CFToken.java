@@ -137,7 +137,6 @@ public class CFToken implements Comparable<CFToken>{
       // initializing code for the static variables of lookahead sets for the
       // grammar variables
 
-
       ASet.add(CFToken.LEFTPAREN);
       ASet.add(CFToken.CMP);
       ASet.add(CFToken.LEFTBRACE);

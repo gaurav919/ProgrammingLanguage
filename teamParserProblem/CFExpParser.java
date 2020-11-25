@@ -1,3 +1,4 @@
+
 /*
 
 YOU WILL NEED TO CODE SOME OF THE METHODS IN THIS CLASS.
@@ -187,486 +188,533 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.LinkedList;
-public class CFExpParser{
-   // this scanner object will be used repeatedly;
-   // it does not appear to work consistently in between
-   // calls when it is bound to 
-   // standard in by the driver;
-   private static CFScanner lex;
-   
-      
-   public CFExpParser(CFScanner sc) throws Exception{
-      
-      if (sc == null)
-         throw new Exception("error in CFExpParser constructor : scanner sc is null");
-      else
-         lex = sc;
-   }
-      
-   /*
-   
-   DO NOT MODIFY THIS
-   
-   
-   Builds the error message when there is a set of tokens that are expected.
-   
-   
-      
-   ***********************************************************************/ 
-   private static String getErrorMessage(String methodName, Set<Integer> tokenIds, CFScanner sc){
-   
-      StringBuilder bld = new StringBuilder();
-      CFToken 
-         curr = sc.lookahead(),
-         prev = sc.getPrevToken();
-         
-         
-      bld.append("error in method " + methodName + " : unexpected token " + curr);
-      
-      bld.append("\nis token number " + sc.getCurrTokenNumber());
-      if (prev == null)
-         bld.append("\nNo previous token.");
-      else
-         bld.append("\nprevious token was " + prev);
-      bld.append("\ncurrent line number is " + sc.getCurrLineNum());
-      bld.append("\nposition after the current token is " + sc.getCurrPos());
-      bld.append(         "\nExpected tokens are : ");
-      for (Integer i : tokenIds){
-         bld.append(CFToken.TOKEN_LABELS[i]);
-         bld.append(' ');
-      }
-      return bld.toString();
-   }
-   
-   /*
-   
-   DO NOT MODIFY THIS
-   
-   Builds the error message when there is a single token that is expected.   
-      
-   ***********************************************************************/ 
-   private static String getErrorMessage(String methodName, int id, CFScanner sc){
-   
-      StringBuilder bld = new StringBuilder();
-      CFToken 
-         curr = sc.lookahead(),
-         prev = sc.getPrevToken();
-         
-         
-      bld.append("error in method " + methodName + " : unexpected token " +
-      curr);
-      bld.append("\nis token number " + sc.getCurrTokenNumber());
-      if (prev == null)
-         bld.append("\nNo previous token.");
-      else
-         bld.append("\nprevious token was " + prev);
-      bld.append("\ncurrent line number is " + sc.getCurrLineNum());
-      bld.append("\nposition after the current token is " + sc.getCurrPos());
-      bld.append(         "\nExpected token is " + CFToken.TOKEN_LABELS[id]);
-      return bld.toString();
-   }
-   /*
-   
-   parse the next expression and return it or throw an exception
-   
-   DO NOT MODIFY THIS
-   */
-   public CFExp parseNext() throws Exception{
-      if (lex.getAtEOF())
-         throw new Exception("error in parseNext : scanner is at end of file at start of parse");
-      else
-         return S();
-   }
-   /*
-   
-   The grammar rule is
-   
-   <S> ::= <E> EOS
-   
-   but we will not consume the EOS symbol so we can put all the
-   expressions in a single file.
-     
-   DO NOT MODIFY THIS
-   */
-   
-   private CFExp S()throws Exception{
-      CFToken tk = lex.lookahead();
-      int tkT = tk.getTokenType();
-      
-      if (CFToken.SSet.contains(tkT)){
-         CFExp result = E();
-         tk = lex.lookahead();
-         tkT = tk.getTokenType();
-         if (tkT != CFToken.EOS)
-            throw new Exception("error in S method : expression is not followed by $");
-         else
-            // note, the EOS is not consumed
-            return result;
-      }
-      else
-         throw new Exception(getErrorMessage("S", CFToken.SSet, lex));
-      
-      
-   }
-   /*
-   
-   YOU MUST CODE THE REMAINING METHODS FOR THE GRAMMAR VARIABLES.
-   
-   The general scheme is based on the replacement rules for the variable
-   and is described above.
-   
-   I have put in return types that I think are appropriate for each
-   grammar variable.
-   
-   **************************************************************************/
-   
-   /*
-   
-   YOU MUST CODE THIS
-   
-   The grammar rule is
-   
-   
-   <E> ::=  <E> SYMMETRICDIFF <A> | <A>
-   convert the last two righthand sides to   <A>(SYMMETRICDIFF <A>)*
-   Lookahead sets
-   LET, IF, LEFTPAREN, COMPLEMENT, CMP, LEFTBRACE, ID
-   
-   return the appropriate CFExp object or throw an exception.
-   
-   *******************************************************************************/
-   private CFExp E() throws Exception{
-      return null;
-      
-            
-   }
-   
-   /*
-   
-   YOU MUST CODE THIS
-   
-   <A> ::= <A> SETDIFF <B> | <B>
-   convert to  <B> (SETDIFF <B>)*
 
+public class CFExpParser {
+	// this scanner object will be used repeatedly;
+	// it does not appear to work consistently in between
+	// calls when it is bound to
+	// standard in by the driver;
+	private static CFScanner lex;
 
-   return the appropriate CFExp object or throw an exception.
-   
-   *************************************************************************/
-   private CFExp A() throws Exception{
-      
-      return null;
-      
-      
-   }
+	public CFExpParser(CFScanner sc) throws Exception {
 
-   /*
-   
-   YOU MUST CODE THIS
-   
-   <B> ::= <B> UNION <C> | <C>
-   convert to  <C> (UNION <C>)*
+		if (sc == null)
+			throw new Exception("error in CFExpParser constructor : scanner sc is null");
+		else
+			lex = sc;
+	}
 
+	/*
+	 * 
+	 * DO NOT MODIFY THIS
+	 * 
+	 * 
+	 * Builds the error message when there is a set of tokens that are expected.
+	 * 
+	 * 
+	 * 
+	 ***********************************************************************/
+	private static String getErrorMessage(String methodName, Set<Integer> tokenIds, CFScanner sc) {
 
-   return the appropriate CFExp object or throw an exception.
-   
-   *************************************************************************/
-   private CFExp B() throws Exception{
-      
-      return null;
-      
-      
-   }
+		StringBuilder bld = new StringBuilder();
+		CFToken curr = sc.lookahead(), prev = sc.getPrevToken();
 
+		bld.append("error in method " + methodName + " : unexpected token " + curr);
 
-   /*
-   
-   YOU MUST CODE THIS
-   
-   <C> ::= <C> INTERSECTION <D> | <D>
-   by Arden's lemma, this means 
-   <C> = <D>(INTERSECTION <D>)*
+		bld.append("\nis token number " + sc.getCurrTokenNumber());
+		if (prev == null)
+			bld.append("\nNo previous token.");
+		else
+			bld.append("\nprevious token was " + prev);
+		bld.append("\ncurrent line number is " + sc.getCurrLineNum());
+		bld.append("\nposition after the current token is " + sc.getCurrPos());
+		bld.append("\nExpected tokens are : ");
+		for (Integer i : tokenIds) {
+			bld.append(CFToken.TOKEN_LABELS[i]);
+			bld.append(' ');
+		}
+		return bld.toString();
+	}
 
+	/*
+	 * 
+	 * DO NOT MODIFY THIS
+	 * 
+	 * Builds the error message when there is a single token that is expected.
+	 * 
+	 ***********************************************************************/
+	private static String getErrorMessage(String methodName, int id, CFScanner sc) {
 
-   return the appropriate CFExp object or throw an exception.
-   
-   *************************************************************************/
-   private CFExp C() throws Exception{
-      
-      return null;
-      
-      
-   }
+		StringBuilder bld = new StringBuilder();
+		CFToken curr = sc.lookahead(), prev = sc.getPrevToken();
 
+		bld.append("error in method " + methodName + " : unexpected token " + curr);
+		bld.append("\nis token number " + sc.getCurrTokenNumber());
+		if (prev == null)
+			bld.append("\nNo previous token.");
+		else
+			bld.append("\nprevious token was " + prev);
+		bld.append("\ncurrent line number is " + sc.getCurrLineNum());
+		bld.append("\nposition after the current token is " + sc.getCurrPos());
+		bld.append("\nExpected token is " + CFToken.TOKEN_LABELS[id]);
+		return bld.toString();
+	}
 
-   /*
-   
-   YOU MUST CODE THIS
-   
-   <D> ::= COMPLEMENT <D> | ID | <CONST> | LEFTPAREN <E> RIGHTPAREN |
-           LET <BLIST> IN <E> ENDLET |
-           IF <TEST> THEN <E> ELSE <E> ENDIF 
-      
-   
-   Lookahead sets
-   COMPLEMENT | ID | CMP, LEFTBRACE | LEFTPAREN | LET | IF
+	/*
+	 * 
+	 * parse the next expression and return it or throw an exception
+	 * 
+	 * DO NOT MODIFY THIS
+	 */
+	public CFExp parseNext() throws Exception {
+		if (lex.getAtEOF())
+			throw new Exception("error in parseNext : scanner is at end of file at start of parse");
+		else
+			return S();
+	}
+	/*
+	 * 
+	 * The grammar rule is
+	 * 
+	 * <S> ::= <E> EOS
+	 * 
+	 * but we will not consume the EOS symbol so we can put all the expressions in a
+	 * single file.
+	 * 
+	 * DO NOT MODIFY THIS
+	 */
 
-   you convert it to 
-   
-   <D> = COMPLEMENT*(LET <BLIST> IN <E> ENDLET |
-                     IF <TEST> THEN <E> ELSE <E> ENDIF |
-                     ID | <CONST> | LEFTPAREN <E> RIGHTPAREN)
+	private CFExp S() throws Exception {
+		CFToken tk = lex.lookahead();
+		int tkT = tk.getTokenType();
 
-   Since two complements in a row cancel, it's okay to just count
-   the number of complements and reduce the number you actually use
-   to the remainder on division by 2, so, for input
-   
-   - - - - - {}
-   
-   you construct an expression for
-   
-   - {}
-   
-   and for 
-   
-   - - - - - - {}
-   
-   you construct an expression for 
-   
-   {}
-   
-   The let expression deserves some explanation.  The syntax is
-   
-   LET <BLIST> IN <E> ENDLET
-   
-   BLIST() should return a Map<String,CFExp> object, call it M, and
-   E() should return a CFExp object, call it e.  The entire rhs 
-   should return e.substitute(M).
-   
-   return the appropriate CFExp object or throw an exception.
-   
-   The if expression is also a bit different and is discussed below below 
-   in the <TEST> and <TESTSUFFIX> methods.
+		if (CFToken.SSet.contains(tkT)) {
+			CFExp result = E();
+			tk = lex.lookahead();
+			tkT = tk.getTokenType();
+			if (tkT != CFToken.EOS)
+				throw new Exception("error in S method : expression is not followed by $");
+			else
+				// note, the EOS is not consumed
+				return result;
+		} else
+			throw new Exception(getErrorMessage("S", CFToken.SSet, lex));
 
-   *************************************************************************/
-   private CFExp D() throws Exception{
-      
-      return null;
-            
-   }
+	}
+	/*
+	 * 
+	 * YOU MUST CODE THE REMAINING METHODS FOR THE GRAMMAR VARIABLES.
+	 * 
+	 * The general scheme is based on the replacement rules for the variable and is
+	 * described above.
+	 * 
+	 * I have put in return types that I think are appropriate for each grammar
+	 * variable.
+	 * 
+	 **************************************************************************/
 
-   /*
-   
-   YOU MUST CODE THIS
-   
-   <CONST> ::= LEFTBRACE <SET INTERIOR> RIGHTBRACE | CMP LEFTBRACE <SET INTERIOR> RIGHTBRACE
-   Lookahead sets
-   LEFTBRACE | CMP
+	/*
+	 * 
+	 * YOU MUST CODE THIS
+	 * 
+	 * The grammar rule is
+	 * 
+	 * 
+	 * <E> ::= <E> SYMMETRICDIFF <A> | <A> convert the last two righthand sides to
+	 * <A>(SYMMETRICDIFF <A>)* Lookahead sets LET, IF, LEFTPAREN, COMPLEMENT, CMP,
+	 * LEFTBRACE, ID
+	 * 
+	 * return the appropriate CFExp object or throw an exception.
+	 * 
+	 * CFExp result = VAR();
+	 * 
+	 * while (lookahead is OPERATORTOKEN){ consume(); CFExp temp = VAR(); result =
+	 * result OPERATORTOKEN temp; // via the constructor }
+	 * 
+	 *******************************************************************************/
+	private CFExp E() throws Exception {
+		CFToken tk = lex.lookahead();
+		int tkT = tk.getTokenType();
 
+		if (!CFToken.ESet.contains(tkT)) {
+			getErrorMessage("E", CFToken.ESet, lex);
+		} else {
+			CFExp result = A();
 
-   return the appropriate CofinFin object or throw an exception.
-   
-   *************************************************************************/
-   private CofinFin CONST() throws Exception{
-      
-      return null;
-            
-   }
+			while (tkT == 0) {
+				lex.consume();
+				CFExp temp = A();
+				result = new CFBinary(tkT, result, temp);
+			}
+		}
 
-   /*
-   
-   YOU MUST CODE THIS
-   
-   <SET INTERIOR> ::= "" | <NE SET INTERIOR>
-   Lookahead sets
-   RIGHTBRACE | NAT
-   
-   
-   return the appropriate int[]  object or throw an exception.
-   
-   Note
-   
-   new int[0]
-   
-   is fine for the empty string alternative.
-   
-   This will give you an array you can use with a CofinFin 
-   constructor.
-   
+		return null;
+	}
 
-   *************************************************************************/
-   private int[] SETINTERIOR() throws Exception{
-      return null;
-      
-   }
+	/*
+	 * 
+	 * YOU MUST CODE THIS
+	 * 
+	 * <A> ::= <A> SETDIFF <B> | <B> convert to <B> (SETDIFF <B>)*
+	 * 
+	 * 
+	 * return the appropriate CFExp object or throw an exception.
+	 * 
+	 *************************************************************************/
+	private CFExp A() throws Exception {
+		CFToken tk = lex.lookahead();
+		int tkT = tk.getTokenType();
+		CFExp result = null;
 
-   /*
-   
-   YOU MUST CODE THIS
-   
-   <NE SET INTERIOR ::= NAT | NAT COMMA <NE SET INTERIOR>
-                       
-   which converts to  (NAT COMMA)* NAT = NAT (COMMA NAT)*
-   Lookahead sets
-   NAT
+		if (!CFToken.ASet.contains(tkT)) {
+			getErrorMessage("A", CFToken.ASet, lex);
+		} else {
+			result = B();
 
-   return the appropriate List<Integer> object for the sequence of NAT instances
-   or throw an exception.
-   
-   *************************************************************************/
-   private List<Integer> NESETINTERIOR() throws Exception{
-      return null;
-      
-   }
+			while (tkT == 18) {
+				lex.consume();
+				CFExp temp = B();
+				result = new CFBinary(tkT, result, temp);
+			}
+		}
 
-   /*
-   
-   YOU MUST CODE THIS
-   
-   <TEST> ::= <E> <TEST SUFFIX>
-   Lookahead sets
-   (union of the lookahead sets for rhs's of <E>)
-   
-   We'll have it return an Object[] res of size 3
-   
-   res[0] is the first expression, for <E>, of type CFExp
-   res[1] is Integer, token type of the relational operator in <TEST SUFFIX>
-          which will either be CFToken.SUBSETOF or CFToken.EQUALS
-   res[2] is the second expression of the test, which comes from <TEST SUFFIX>
-   
+		return result;
+	}
 
-   *************************************************************************/
-   private Object[] TEST() throws Exception{
-      return null;
-      
-   }
+	/*
+	 * 
+	 * YOU MUST CODE THIS
+	 * 
+	 * <B> ::= <B> UNION <C> | <C> convert to <C> (UNION <C>)*
+	 * 
+	 * 
+	 * return the appropriate CFExp object or throw an exception.
+	 * 
+	 *************************************************************************/
+	private CFExp B() throws Exception {
+		CFToken tk = lex.lookahead();
+		int tkT = tk.getTokenType();
+		CFExp result = null;
 
-   /*
-   
-   YOU MUST CODE THIS
-   
-   <TEST SUFFIX> ::= SUBSETOF <E> | EQUALS <E>
-   Lookahead sets
-   SUBSETOF | EQUALS
-   
-   We'll have it return Object[] res of size 2
-   
-   res[0] is Integer, the token type of the relational operator
-          which will either be CFToken.SUBSETOF or CFToken.EQUALS   
-   res[1] is the second expression of the test, the value given in <E>,
-          of type CFExp
-   
+		if (!CFToken.BSet.contains(tkT)) {
+			getErrorMessage("B", CFToken.BSet, lex);
+		} else {
+			result = C();
 
-   *************************************************************************/
-   private Object[] TESTSUFFIX() throws Exception{
- 
-      return null;
-      
-   }
+			while (tkT == 17) {
+				lex.consume();
+				CFExp temp = C();
+				result = new CFBinary(tkT, result, temp);
+			}
+		}
 
-   /*
-   
-   YOU MUST CODE THIS
-   
-   This one is trickier.
-   
-   <BLIST> ::= "" | ID EQUALS <E> SEMICOLON <BLIST>
-   Lookahead sets
-   IN | ID   
-   
-   Convert to  (ID EQUALS <E> SEMICOLON)*, which amounts to a
-   list of single bindings
-   
-   ID EQUALS <E> SEMICOLON
-   
-   Initialize a Map object to the empty (but not null) map.
-   
-   process each
-   
-   
-   ID EQUALS <E> SEMICOLON
-   
-   in the list as follows.  Obtain the string of the ID, s, and
-   the CFExp object that E() returns, call it exp.  Then use the 
-   current value of the Map object to obtain a substituted version
-   of exp (it's okay to store that in exp itself, as in
-   exp = exp.substitute(MapObject), because exp should be a local
-   variable), where the substituted version is constructed from 
-   exp's substitute method using the current value for the map 
-   object.   Then install (s, substituted version of exp) in the
-   map object.
-   
-   When you have processed all the single bindings in the list, return
-   the final map object.
-   
-   Of course, throw an exception if you encounter a wrong token.
-   
-   Note, you might overwrite an earlier binding, for example
+		return result;
+	}
 
-   let
-      x = {1};
-      x =  x U {2};
-   in
-      x U {3}
-   endlet
+	/*
+	 * 
+	 * YOU MUST CODE THIS
+	 * 
+	 * <C> ::= <C> INTERSECTION <D> | <D> by Arden's lemma, this means <C> =
+	 * <D>(INTERSECTION <D>)*
+	 * 
+	 * 
+	 * return the appropriate CFExp object or throw an exception.
+	 * 
+	 *************************************************************************/
+	private CFExp C() throws Exception {
+		CFToken tk = lex.lookahead();
+		int tkT = tk.getTokenType();
+		CFExp result = null;
 
-   would first install (x, {1}) in the map, and then replace it with
-   {1} U {2} because the susbtitution would replace the x in x U {2} with
-   {1} and then replace the (x, {1}) in the map with (x, {1} U {2}).
-   
-   
-   The substitute method should be coded so that when a CFVar object 
-   is being replaced by an entry from the map, it is replaced by a
-   deep copy of the entry.  The reason we have to do a deep copy of
-   what the map has for a variable when we perform the substitutions
-   using the map can be illustrated by the expression
-   
-   let 
-      x = x U x;
-      y = let
-             z = x @ x;
-          in 
-             z \ z
-          endlet;
-   in
-      y
-   endlet
-   
-   The nested 
-   
-   let
-      z = x @ x
-   in 
-      z \ z
-  endlet
-  
-  should return the expression
-  
-  (x @ x) \ (x @ x)
-  
-  but because of sharing of reference types, if we did not do a
-  deep copy of the map entry for z, x @ x, we would actually have
-  
-  (pointer to a (x @ x) CFExp) \ (pointer to the same (x @ x) CFExp)
-  
-  and in the recursive substitute method we would encounter that same object
-  twice, with a side effect introducing MORE occurrences of x that would be 
-  be replaced.  The final result should be
-  
-  ((x U x) @ (x U x)) \ ((x U x) @ (x U x))
-  
-  but would instead be
-  
-  ((x U x) @ (x U x)) \ (((x U x) U (x U x)) @ ((x U x) U (x U x)))
-  
-  By making a deep copy of the map binding for a variable, we are 
-  ensured that there will be no shared subexpressions within an
-  expression, so as we substitute at a leaf variable, the effect of 
-  replacing it will be local to that leaf position.
-  
-   *************************************************************************/
-   private Map<String, CFExp> BLIST() throws Exception{
-      return null;
-      
-   }
-      
+		if (!CFToken.CSet.contains(tkT)) {
+			getErrorMessage("C", CFToken.CSet, lex);
+		} else {
+			result = D();
+
+			while (tkT == 16) {
+				lex.consume();
+				CFExp temp = D();
+				result = new CFBinary(tkT, result, temp);
+			}
+		}
+
+		return result;
+	}
+
+	/*
+	 * <D> accomplishes both the complement operation and the "atoms"; using Arden's
+	 * lemma. Note the let and if expressions in effect have their own punctuation
+	 * parentheses, let-endlet and if-endif.
+	 * 
+	 * You can convert this to
+	 * 
+	 * <D> = COMPLEMENT*(LET <BLIST> IN <E> ENDLET | IF <TEST> THEN <E> ELSE <E>
+	 * ENDIF | ID | <CONST> | LEFTPAREN <E> RIGHTPAREN)
+	 * 
+	 * and then use a loop to count the number of COMPLEMENT(-) operations.
+	 * 
+	 * <D> ::= COMPLEMENT <D> | ID | <CONST> | LEFTPAREN <E> RIGHTPAREN LET <BLIST>
+	 * IN <E> ENDLET | IF <TEST> THEN <E> ELSE <E> ENDIF Lookahead sets COMPLEMENT |
+	 * ID | CMP, LEFTBRACE | LEFTPAREN | LET | IF
+	 * 
+	 * YOU MUST CODE THIS
+	 * 
+	 * <D> ::= COMPLEMENT <D> | ID | <CONST> | LEFTPAREN <E> RIGHTPAREN | LET
+	 * <BLIST> IN <E> ENDLET | IF <TEST> THEN <E> ELSE <E> ENDIF
+	 * 
+	 * 
+	 * Lookahead sets COMPLEMENT | ID | CMP, LEFTBRACE | LEFTPAREN | LET | IF
+	 * 
+	 * you convert it to
+	 * 
+	 * <D> = COMPLEMENT*(LET <BLIST> IN <E> ENDLET | IF <TEST> THEN <E> ELSE <E>
+	 * ENDIF | ID | <CONST> | LEFTPAREN <E> RIGHTPAREN)
+	 * 
+	 * Since two complements in a row cancel, it's okay to just count the number of
+	 * complements and reduce the number you actually use to the remainder on
+	 * division by 2, so, for input
+	 * 
+	 * - - - - - {}
+	 * 
+	 * you construct an expression for
+	 * 
+	 * - {}
+	 * 
+	 * and for
+	 * 
+	 * - - - - - - {}
+	 * 
+	 * you construct an expression for
+	 * 
+	 * {}
+	 * 
+	 * The let expression deserves some explanation. The syntax is
+	 * 
+	 * LET <BLIST> IN <E> ENDLET
+	 * 
+	 * BLIST() should return a Map<String,CFExp> object, call it M, and E() should
+	 * return a CFExp object, call it e. The entire rhs should return
+	 * e.substitute(M).
+	 * 
+	 * return the appropriate CFExp object or throw an exception.
+	 * 
+	 * The if expression is also a bit different and is discussed below below in the
+	 * <TEST> and <TESTSUFFIX> methods.
+	 * 
+	 *************************************************************************/
+	private CFExp D() throws Exception {
+		CFToken tk = lex.lookahead();
+		int tkT = tk.getTokenType(), cmpCount = 0;
+		CFExp e = null;
+		Map<String, CFExp> M = null;
+
+		if (!CFToken.DSet.contains(tkT)) {
+			getErrorMessage("D", CFToken.DSet, lex);
+		} else {
+			if (tkT == 19) {
+				// Getting complement count
+				while (tkT == 19) {
+					cmpCount++;
+					lex.consume();
+					tk = lex.lookahead();
+					tkT = tk.getTokenType();
+				}
+				//reducing it down to either cmp or not cmp
+				cmpCount = cmpCount % 2;
+			}
+			/*
+			 * now that we have the complement from here we have to look at individual
+			 * keywords maybe use a switch statement, since it basically finds complement,
+			 * then just chooses where it goes from there with whatever reserved word
+			 * appears, such as let, if, etc...
+			 */
+		}
+
+		return e.substitute(M);
+	}
+
+	/*
+	 * 
+	 * YOU MUST CODE THIS
+	 * 
+	 * <CONST> ::= LEFTBRACE <SET INTERIOR> RIGHTBRACE | CMP LEFTBRACE <SET
+	 * INTERIOR> RIGHTBRACE Lookahead sets LEFTBRACE | CMP
+	 * 
+	 * 
+	 * return the appropriate CofinFin object or throw an exception.
+	 * 
+	 *************************************************************************/
+	private CofinFin CONST() throws Exception {
+
+		return null;
+
+	}
+
+	/*
+	 * 
+	 * YOU MUST CODE THIS
+	 * 
+	 * <SET INTERIOR> ::= "" | <NE SET INTERIOR> Lookahead sets RIGHTBRACE | NAT
+	 * 
+	 * 
+	 * return the appropriate int[] object or throw an exception.
+	 * 
+	 * Note
+	 * 
+	 * new int[0]
+	 * 
+	 * is fine for the empty string alternative.
+	 * 
+	 * This will give you an array you can use with a CofinFin constructor.
+	 * 
+	 * 
+	 *************************************************************************/
+	private int[] SETINTERIOR() throws Exception {
+		return null;
+
+	}
+
+	/*
+	 * 
+	 * YOU MUST CODE THIS
+	 * 
+	 * <NE SET INTERIOR ::= NAT | NAT COMMA <NE SET INTERIOR>
+	 * 
+	 * which converts to (NAT COMMA)* NAT = NAT (COMMA NAT)* Lookahead sets NAT
+	 * 
+	 * return the appropriate List<Integer> object for the sequence of NAT instances
+	 * or throw an exception.
+	 * 
+	 *************************************************************************/
+	private List<Integer> NESETINTERIOR() throws Exception {
+		return null;
+
+	}
+
+	/*
+	 * 
+	 * YOU MUST CODE THIS
+	 * 
+	 * <TEST> ::= <E> <TEST SUFFIX> Lookahead sets (union of the lookahead sets for
+	 * rhs's of <E>)
+	 * 
+	 * We'll have it return an Object[] res of size 3
+	 * 
+	 * res[0] is the first expression, for <E>, of type CFExp res[1] is Integer,
+	 * token type of the relational operator in <TEST SUFFIX> which will either be
+	 * CFToken.SUBSETOF or CFToken.EQUALS res[2] is the second expression of the
+	 * test, which comes from <TEST SUFFIX>
+	 * 
+	 * 
+	 *************************************************************************/
+	private Object[] TEST() throws Exception {
+		return null;
+
+	}
+
+	/*
+	 * 
+	 * YOU MUST CODE THIS
+	 * 
+	 * <TEST SUFFIX> ::= SUBSETOF <E> | EQUALS <E> Lookahead sets SUBSETOF | EQUALS
+	 * 
+	 * We'll have it return Object[] res of size 2
+	 * 
+	 * res[0] is Integer, the token type of the relational operator which will
+	 * either be CFToken.SUBSETOF or CFToken.EQUALS res[1] is the second expression
+	 * of the test, the value given in <E>, of type CFExp
+	 * 
+	 * 
+	 *************************************************************************/
+	private Object[] TESTSUFFIX() throws Exception {
+
+		return null;
+
+	}
+
+	/*
+	 * 
+	 * YOU MUST CODE THIS
+	 * 
+	 * This one is trickier.
+	 * 
+	 * <BLIST> ::= "" | ID EQUALS <E> SEMICOLON <BLIST> Lookahead sets IN | ID
+	 * 
+	 * Convert to (ID EQUALS <E> SEMICOLON)*, which amounts to a list of single
+	 * bindings
+	 * 
+	 * ID EQUALS <E> SEMICOLON
+	 * 
+	 * Initialize a Map object to the empty (but not null) map.
+	 * 
+	 * process each
+	 * 
+	 * 
+	 * ID EQUALS <E> SEMICOLON
+	 * 
+	 * in the list as follows. Obtain the string of the ID, s, and the CFExp object
+	 * that E() returns, call it exp. Then use the current value of the Map object
+	 * to obtain a substituted version of exp (it's okay to store that in exp
+	 * itself, as in exp = exp.substitute(MapObject), because exp should be a local
+	 * variable), where the substituted version is constructed from exp's substitute
+	 * method using the current value for the map object. Then install (s,
+	 * substituted version of exp) in the map object.
+	 * 
+	 * When you have processed all the single bindings in the list, return the final
+	 * map object.
+	 * 
+	 * Of course, throw an exception if you encounter a wrong token.
+	 * 
+	 * Note, you might overwrite an earlier binding, for example
+	 * 
+	 * let x = {1}; x = x U {2}; in x U {3} endlet
+	 * 
+	 * would first install (x, {1}) in the map, and then replace it with {1} U {2}
+	 * because the susbtitution would replace the x in x U {2} with {1} and then
+	 * replace the (x, {1}) in the map with (x, {1} U {2}).
+	 * 
+	 * 
+	 * The substitute method should be coded so that when a CFVar object is being
+	 * replaced by an entry from the map, it is replaced by a deep copy of the
+	 * entry. The reason we have to do a deep copy of what the map has for a
+	 * variable when we perform the substitutions using the map can be illustrated
+	 * by the expression
+	 * 
+	 * let x = x U x; y = let z = x @ x; in z \ z endlet; in y endlet
+	 * 
+	 * The nested
+	 * 
+	 * let z = x @ x in z \ z endlet
+	 * 
+	 * should return the expression
+	 * 
+	 * (x @ x) \ (x @ x)
+	 * 
+	 * but because of sharing of reference types, if we did not do a deep copy of
+	 * the map entry for z, x @ x, we would actually have
+	 * 
+	 * (pointer to a (x @ x) CFExp) \ (pointer to the same (x @ x) CFExp)
+	 * 
+	 * and in the recursive substitute method we would encounter that same object
+	 * twice, with a side effect introducing MORE occurrences of x that would be be
+	 * replaced. The final result should be
+	 * 
+	 * ((x U x) @ (x U x)) \ ((x U x) @ (x U x))
+	 * 
+	 * but would instead be
+	 * 
+	 * ((x U x) @ (x U x)) \ (((x U x) U (x U x)) @ ((x U x) U (x U x)))
+	 * 
+	 * By making a deep copy of the map binding for a variable, we are ensured that
+	 * there will be no shared subexpressions within an expression, so as we
+	 * substitute at a leaf variable, the effect of replacing it will be local to
+	 * that leaf position.
+	 * 
+	 *************************************************************************/
+	private Map<String, CFExp> BLIST() throws Exception {
+		return null;
+
+	}
+
 }
