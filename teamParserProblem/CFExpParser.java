@@ -365,9 +365,9 @@ public class CFExpParser {
 		CFToken tk = lex.lookahead();
 		int tkT = tk.getTokenType();
 		CFExp result = null;
-		
-		if (!CFToken.ESet.contains(tkT)) {
-			getErrorMessage("A", CFToken.ESet, lex);
+
+		if (!CFToken.ASet.contains(tkT)) {
+			getErrorMessage("A", CFToken.ASet, lex);
 		} else {
 			result = B();
 
@@ -396,8 +396,8 @@ public class CFExpParser {
 		int tkT = tk.getTokenType();
 		CFExp result = null;
 
-		if (!CFToken.ESet.contains(tkT)) {
-			getErrorMessage("B", CFToken.ESet, lex);
+		if (!CFToken.BSet.contains(tkT)) {
+			getErrorMessage("B", CFToken.BSet, lex);
 		} else {
 			result = C();
 
@@ -427,8 +427,8 @@ public class CFExpParser {
 		int tkT = tk.getTokenType();
 		CFExp result = null;
 
-		if (!CFToken.ESet.contains(tkT)) {
-			getErrorMessage("C", CFToken.ESet, lex);
+		if (!CFToken.CSet.contains(tkT)) {
+			getErrorMessage("C", CFToken.CSet, lex);
 		} else {
 			result = D();
 
@@ -443,25 +443,21 @@ public class CFExpParser {
 	}
 
 	/*
-	 * <D> accomplishes both the complement operation and the
-    "atoms"; using Arden's lemma.  Note the let and if 
-    expressions in effect have their own punctuation parentheses,
-    let-endlet and if-endif. 
-    
-You can convert this to
-    
-	<D> = COMPLEMENT*(LET <BLIST> IN <E> ENDLET |
-             IF <TEST> THEN <E> ELSE <E> ENDIF |
-             ID | <CONST> | LEFTPAREN <E> RIGHTPAREN)
-
-	and then use a loop to count the number of COMPLEMENT(-) operations.
-
-	<D> ::= COMPLEMENT <D> | ID | <CONST> | LEFTPAREN <E> RIGHTPAREN
-        	LET <BLIST> IN <E> ENDLET |
-        	IF <TEST> THEN <E> ELSE <E> ENDIF 
-	Lookahead sets
-	COMPLEMENT | ID | CMP, LEFTBRACE | LEFTPAREN | LET | IF
-
+	 * <D> accomplishes both the complement operation and the "atoms"; using Arden's
+	 * lemma. Note the let and if expressions in effect have their own punctuation
+	 * parentheses, let-endlet and if-endif.
+	 * 
+	 * You can convert this to
+	 * 
+	 * <D> = COMPLEMENT*(LET <BLIST> IN <E> ENDLET | IF <TEST> THEN <E> ELSE <E>
+	 * ENDIF | ID | <CONST> | LEFTPAREN <E> RIGHTPAREN)
+	 * 
+	 * and then use a loop to count the number of COMPLEMENT(-) operations.
+	 * 
+	 * <D> ::= COMPLEMENT <D> | ID | <CONST> | LEFTPAREN <E> RIGHTPAREN LET <BLIST>
+	 * IN <E> ENDLET | IF <TEST> THEN <E> ELSE <E> ENDIF Lookahead sets COMPLEMENT |
+	 * ID | CMP, LEFTBRACE | LEFTPAREN | LET | IF
+	 * 
 	 * YOU MUST CODE THIS
 	 * 
 	 * <D> ::= COMPLEMENT <D> | ID | <CONST> | LEFTPAREN <E> RIGHTPAREN | LET
@@ -509,20 +505,30 @@ You can convert this to
 	 *************************************************************************/
 	private CFExp D() throws Exception {
 		CFToken tk = lex.lookahead();
-		int tkT = tk.getTokenType();
+		int tkT = tk.getTokenType(), cmpCount = 0;
 		CFExp e = null;
 		Map<String, CFExp> M = null;
 
-		if (!CFToken.ESet.contains(tkT)) {
-			getErrorMessage("D", CFToken.ESet, lex);
+		if (!CFToken.DSet.contains(tkT)) {
+			getErrorMessage("D", CFToken.DSet, lex);
 		} else {
-			e = D();
-
-			while (tkT == 16) {
-				lex.consume();
-				CFExp temp = D();
-				e = new CFBinary(tkT, e, temp);
+			if (tkT == 19) {
+				// Getting complement count
+				while (tkT == 19) {
+					cmpCount++;
+					lex.consume();
+					tk = lex.lookahead();
+					tkT = tk.getTokenType();
+				}
+				//reducing it down to either cmp or not cmp
+				cmpCount = cmpCount % 2;
 			}
+			/*
+			 * now that we have the complement from here we have to look at individual
+			 * keywords maybe use a switch statement, since it basically finds complement,
+			 * then just chooses where it goes from there with whatever reserved word
+			 * appears, such as let, if, etc...
+			 */
 		}
 
 		return e.substitute(M);
