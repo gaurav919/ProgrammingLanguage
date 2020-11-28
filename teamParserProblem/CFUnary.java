@@ -50,6 +50,11 @@ public class CFUnary extends CFExp{
    **********************************************************************/
    
 	public CofinFin eval(Map<String, CofinFin> env) throws Exception{
+      if (env == null) {
+         throw new Exception("error in eval : env is null");
+      }else if( ){
+         throw new Exception("error in eval : variable " + s + " is not bound in the environment")
+      }
       return null;
       
    }
@@ -73,6 +78,9 @@ public class CFUnary extends CFExp{
    **********************************************************************/
  
 	public  CFExp substitute(Map<String, CFExp> bindings)throws Exception{
+      if (bindings == null) {
+         throw new Exception("error in substitute : bindings is null");
+        }
       return null;
       
    }
