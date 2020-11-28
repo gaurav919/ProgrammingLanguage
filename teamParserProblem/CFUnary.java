@@ -52,9 +52,11 @@ public class CFUnary extends CFExp{
 	public CofinFin eval(Map<String, CofinFin> env) throws Exception{
       if (env == null) {
          throw new Exception("error in eval : env is null");
-      }else if( ){
-         throw new Exception("error in eval : variable " + s + " is not bound in the environment")
       }
+      //Until this statement is figured out it will just throw errors, so I'm commenting it out -N
+//      }else if( ){
+//         throw new Exception("error in eval : variable " + s + " is not bound in the environment")
+//      }
       return null;
       
    }

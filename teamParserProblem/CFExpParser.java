@@ -299,7 +299,7 @@ public class CFExpParser {
 				return result;
 		} else
 			throw new Exception(getErrorMessage("S", CFToken.SSet, lex));
-
+		
 	}
 	/*
 	 * 
@@ -335,11 +335,12 @@ public class CFExpParser {
 	private CFExp E() throws Exception {
 		CFToken tk = lex.lookahead();
 		int tkT = tk.getTokenType();
-
+		CFExp result = null;
+		
 		if (!CFToken.ESet.contains(tkT)) {
 			getErrorMessage("E", CFToken.ESet, lex);
 		} else {
-			CFExp result = A();
+			result = A();
 
 			while (tkT == 0) {
 				lex.consume();
@@ -348,7 +349,7 @@ public class CFExpParser {
 			}
 		}
 
-		return null;
+		return result;
 	}
 
 	/*
@@ -561,7 +562,7 @@ public class CFExpParser {
 				//consume IF
 				lex.consume();
 				testReturn = TEST();
-				
+				//not super sure where to go from here for IF
 			}
 		}
 
@@ -580,8 +581,17 @@ public class CFExpParser {
 	 * 
 	 *************************************************************************/
 	private CofinFin CONST() throws Exception {
+		CofinFin result = null;
+		CFToken tk = lex.lookahead();
+		int tkT = tk.getTokenType();
 		
-		return null;
+		if(!CFToken.CONSTSet.contains(tkT)) {
+			getErrorMessage("CONST", CFToken.CONSTSet, lex);
+		}
+		
+		
+		
+		return result;
 	}
 
 	/*
@@ -604,8 +614,15 @@ public class CFExpParser {
 	 * 
 	 *************************************************************************/
 	private int[] SETINTERIOR() throws Exception {
+		int[] res;
+		CFToken tk = lex.lookahead();
+		int tkT = tk.getTokenType();
+		
+		if(!CFToken.SETINTERIORSet.contains(tkT)) {
+			getErrorMessage("SETINTERIOR", CFToken.SETINTERIORSet, lex);
+		}
+		
 		return null;
-
 	}
 
 	/*
@@ -621,8 +638,15 @@ public class CFExpParser {
 	 * 
 	 *************************************************************************/
 	private List<Integer> NESETINTERIOR() throws Exception {
-		return null;
-
+		List<Integer> res = new LinkedList<Integer>();
+		CFToken tk = lex.lookahead();
+		int tkT = tk.getTokenType();
+		
+		if(!CFToken.NESETINTERIORSet.contains(tkT)) {
+			getErrorMessage("NESETINTERIOR", CFToken.NESETINTERIORSet, lex);
+		}
+		
+		return res;
 	}
 
 	/*
@@ -778,8 +802,15 @@ public class CFExpParser {
 	 * 
 	 *************************************************************************/
 	private Map<String, CFExp> BLIST() throws Exception {
+		Map<String, CFExp> res;
+		CFToken tk = lex.lookahead();
+		int tkT = tk.getTokenType();
+		
+		if(!CFToken.BLISTSet.contains(tkT)) {
+			getErrorMessage("BLIST", CFToken.BLISTSet, lex);
+		}
+		
 		return null;
-
 	}
 
 }
