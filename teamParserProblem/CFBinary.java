@@ -133,9 +133,9 @@ public class CFBinary extends CFExp{
 	public  CFExp substitute(Map<String, CFExp> bindings)throws Exception{
       if (bindings == null) {
        throw new Exception("error in substitute : bindings is null");
+      }else {
+    	  return new CFBinary(operator, bindings.get("leftSub"), bindings.get("rightSub"));
       }
-      
-      return null;
    }
    
    /*
@@ -147,8 +147,8 @@ public class CFBinary extends CFExp{
    *****************************************************************/
 	public  CFExp deepCopy(){
 		// should never throw an exception
-
-        return null;
+		CFExp exp = this;
+        return exp;
      }
  
 	

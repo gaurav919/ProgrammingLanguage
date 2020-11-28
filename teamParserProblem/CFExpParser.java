@@ -508,6 +508,7 @@ public class CFExpParser {
 		int tkT = tk.getTokenType(), cmpCount = 0;
 		CFExp e = null;
 		Map<String, CFExp> M = null;
+		Object[] testReturn;
 
 		if (!CFToken.DSet.contains(tkT)) {
 			getErrorMessage("D", CFToken.DSet, lex);
@@ -522,16 +523,49 @@ public class CFExpParser {
 				}
 				//reducing it down to either cmp or not cmp
 				cmpCount = cmpCount % 2;
+				/*
+				 * The cmp needs to be constructed using the CONST grammar variable, which creates a CofinFin object
+				 * that either sets up a LEFTBRACE or COMPLEMENT LEFTBRACE. I just need a second to figure out what to
+				 * how to do that exactly. it will need to come back here.
+				 * ************************************************************/
 			}
 			/*
 			 * now that we have the complement from here we have to look at individual
 			 * keywords maybe use a switch statement, since it basically finds complement,
 			 * then just chooses where it goes from there with whatever reserved word
 			 * appears, such as let, if, etc...
-			 */
+			 ******************************************************************/
+			//if token type == LET
+			if (tkT == 2) {
+				//Consume LET
+				lex.consume();
+				//BLIST() will consume the token it deals with
+				M = BLIST();
+				//consume IN
+				lex.consume();
+				//E() consumes the token it deals with
+				e = E();
+				tk = lex.lookahead();
+				tkT = tk.getTokenType();
+				//if token type == ENDLET
+				if(tkT == 3) {
+					lex.consume();
+				//else throw error for expected ENDLET
+				}else {
+					getErrorMessage("D", CFToken.ENDLET, lex);
+				}
+				//rhs returns e.substitue(M)
+				return e.substitute(M);
+			//if token type == IF
+			}else if(tkT == 4) {
+				//consume IF
+				lex.consume();
+				testReturn = TEST();
+				
+			}
 		}
 
-		return e.substitute(M);
+		return null;
 	}
 
 	/*
@@ -546,9 +580,8 @@ public class CFExpParser {
 	 * 
 	 *************************************************************************/
 	private CofinFin CONST() throws Exception {
-
+		
 		return null;
-
 	}
 
 	/*
@@ -609,8 +642,21 @@ public class CFExpParser {
 	 * 
 	 *************************************************************************/
 	private Object[] TEST() throws Exception {
-		return null;
-
+		Object[] res = new Object[3];
+		Object[] resSuffix;
+		CFToken tk = lex.lookahead();
+		int tkT = tk.getTokenType();
+		
+		if(!CFToken.TESTSet.contains(tkT)) {
+			getErrorMessage("TEST", CFToken.TESTSet, lex);
+		}
+		//E() should consume the token at it's end
+		res[0] = E();
+		resSuffix = TESTSUFFIX();
+		res[1] = resSuffix[0];
+		res[2] = resSuffix[1];
+		
+		return res;
 	}
 
 	/*
@@ -622,15 +668,34 @@ public class CFExpParser {
 	 * We'll have it return Object[] res of size 2
 	 * 
 	 * res[0] is Integer, the token type of the relational operator which will
-	 * either be CFToken.SUBSETOF or CFToken.EQUALS res[1] is the second expression
+	 * either be CFToken.SUBSETOF or CFToken.EQUALS, res[1] is the second expression
 	 * of the test, the value given in <E>, of type CFExp
 	 * 
 	 * 
 	 *************************************************************************/
 	private Object[] TESTSUFFIX() throws Exception {
-
-		return null;
-
+		Object[] res = new Object[2];
+		CFToken tk = lex.lookahead();
+		int tkT = tk.getTokenType();
+		
+		if(!CFToken.TESTSUFFIXSet.contains(tkT)) {
+			getErrorMessage("TESTSUFFIX", CFToken.TESTSUFFIXSet, lex);
+		}
+		if(tkT == 14) {
+			//res[0] set to SUBSETOF int type
+			res[0] = tkT;
+			//consume SUBSETOF token
+			lex.consume();
+			res[1] = E();
+		}else {
+			//res[0] set to EQUALS int type
+			res[0] = tkT;
+			//consume EQUALS token
+			lex.consume();
+			res[1] = E();
+		}
+		
+		return res;
 	}
 
 	/*
